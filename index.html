@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sharknado: Into the Storm — Hackathon 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#050510;--panel:#f7f2e0;--panel2:#ede8cc;--red:#cc1200;--yellow:#ffcc00;--orange:#ff6200;--blue:#0066ee;--sky:#33aaff;--muted:#5a4a2a}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Comic Neue',cursive;background:#050508;color:#e8e8e8;min-height:100vh;overflow-x:hidden;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,80,200,.04) 39px,rgba(0,80,200,.04) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,80,200,.04) 39px,rgba(0,80,200,.04) 40px)}
+.hero{background:#02020e;border-bottom:5px solid var(--orange);padding:36px 40px 42px;position:relative;overflow:hidden;min-height:280px;display:flex;align-items:flex-end}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 35% 130%,rgba(255,98,0,.28) 0%,rgba(200,30,0,.08) 35%,transparent 55%),radial-gradient(ellipse at 92% -8%,rgba(0,80,238,.18) 0%,transparent 42%),radial-gradient(ellipse at 8% 55%,rgba(0,40,140,.12) 0%,transparent 35%);pointer-events:none}
+.hero::after{content:'';position:absolute;top:0;right:0;width:50%;height:100%;background-image:radial-gradient(circle,rgba(0,102,238,.1) 2px,transparent 2px);background-size:16px 16px;pointer-events:none}
+.hero-content{position:relative;z-index:2;width:100%}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--sky);text-transform:uppercase;margin-bottom:10px;border:2px solid var(--sky);display:inline-block;padding:3px 10px}
+.hero h1{font-family:'Bangers',cursive;font-size:clamp(56px,9vw,104px);line-height:.95;letter-spacing:.04em;color:#ff6200;font-style:italic;text-shadow:-3px -3px 0 #fff,3px -3px 0 #fff,-3px 3px 0 #fff,3px 3px 0 #fff,0 -3px 0 #fff,0 3px 0 #fff,-3px 0 0 #fff,3px 0 0 #fff,-2px -2px 0 #fff,2px -2px 0 #fff,-2px 2px 0 #fff,2px 2px 0 #fff,7px 7px 0 #880e00,11px 11px 0 rgba(0,0,0,.6);margin-bottom:6px}
+.hero-subtitle{display:inline-block;background:linear-gradient(90deg,#003daa,#0066ee);color:#fff;font-family:'Bangers',cursive;font-size:clamp(17px,2.5vw,29px);letter-spacing:.14em;padding:5px 22px 7px;border:2.5px solid rgba(255,255,255,.22);margin-bottom:8px;text-shadow:2px 2px 0 rgba(0,0,30,.7);font-style:normal}
+.hero-assignments{font-family:'Bangers',cursive;font-size:clamp(18px,2.6vw,30px);letter-spacing:.1em;color:var(--yellow);text-shadow:2px 2px 0 rgba(0,0,0,.8);margin-bottom:20px}
+.hero-sub{font-size:12px;color:rgba(255,200,0,.5);margin-bottom:22px;font-family:'DM Mono',monospace}
+.stats-row{display:flex;gap:16px;flex-wrap:wrap}
+.stat{padding:6px 14px;border:3px solid #0a0a18}
+.stat:nth-child(1){background:var(--yellow);transform:rotate(-1.2deg)}
+.stat:nth-child(2){background:var(--sky);transform:rotate(.8deg)}
+.stat:nth-child(3){background:var(--orange);transform:rotate(-.5deg)}
+.stat-num{font-family:'Bangers',cursive;font-size:26px;color:#050510;line-height:1;display:block}
+.stat-label{font-size:9px;color:#050510;text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace}
+.controls{background:#050508;border-bottom:4px solid var(--blue);padding:12px 40px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:260px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#555;pointer-events:none}
+input[type=search]{width:100%;background:#0d0d14;border:2px solid #1a1a2e;border-radius:0;padding:8px 10px 8px 32px;color:#e8e8e8;font-family:'Comic Neue',cursive;font-size:13px;outline:none}
+input[type=search]:focus{border-color:var(--blue)}
+input[type=search]::placeholder{color:#444}
+.filter-group{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.filter-label{font-family:'DM Mono',monospace;font-size:10px;color:#555;letter-spacing:.05em}
+.pill{font-family:'Bangers',cursive;font-size:13px;letter-spacing:.05em;padding:4px 12px;border:2px solid #1a1a2e;background:#0d0d14;color:#555;cursor:pointer;transition:all .1s}
+.pill:hover{border-color:var(--sky);color:var(--sky)}
+.pill.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.pill.open-active{background:var(--red);border-color:var(--red);color:var(--yellow)}
+.count-badge{font-family:'DM Mono',monospace;font-size:11px;color:#555;margin-left:auto}
+.grid-container{padding:28px 40px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;background:#050508}
+.section-divider{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:4px 0}
+.section-divider-line{flex:1;height:3px;background:#1a1a2e}
+.section-divider-label{font-family:'Bangers',cursive;font-size:18px;letter-spacing:.08em;white-space:nowrap;background:var(--blue);color:#fff;padding:2px 16px;border:3px solid #050510;font-style:italic}
+.card-scene{perspective:1000px;min-height:360px;height:360px}
+.team-card{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,.2,.2,1);cursor:pointer}
+.team-card.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;border:3px solid var(--ink);background:var(--panel)}
+.card-back{transform:rotateY(180deg)}
+.card-scene:hover .team-card:not(.flipped) .card-face{background:var(--panel2)}
+.team-card.flipped .card-back{background:var(--panel2)}
+.card-accent-bar{height:8px;flex-shrink:0}
+.card-header{padding:12px 16px 8px;border-bottom:2px solid var(--ink)}
+.card-num{font-family:'Bangers',cursive;font-size:11px;letter-spacing:.1em}
+.open-badge{font-family:'Bangers',cursive;font-size:10px;padding:1px 6px;background:var(--red);color:var(--yellow);border:2px solid var(--ink);margin-left:6px}
+.card-teamname{font-family:'DM Mono',monospace;font-size:10px;color:#888;letter-spacing:.03em;font-style:italic}
+.card-title{font-family:'Bangers',cursive;font-size:15px;line-height:1.2;color:var(--ink);margin:4px 0 6px}
+.theme-pill{font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;border:2px solid;display:inline-block}
+.card-stats{padding:8px 16px;display:flex;gap:12px;border-bottom:2px solid var(--ink);flex-shrink:0;align-items:center}
+.mini-stat{display:flex;flex-direction:column}
+.mini-num{font-family:'Bangers',cursive;font-size:20px;color:var(--ink);line-height:1}
+.mini-label{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.05em}
+.role-chips{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.role-chip{font-size:9px;font-family:'DM Mono',monospace;padding:2px 5px;border:1.5px solid var(--ink);background:var(--yellow);color:var(--ink)}
+.card-members{padding:8px 16px 0;flex:1;overflow:hidden;display:flex;flex-direction:column;gap:3px}
+.member-row{display:flex;align-items:center;gap:6px;font-size:11px}
+.member-dot{width:8px;height:8px;flex-shrink:0;border:1.5px solid var(--ink)}
+.member-name{font-weight:700;color:var(--ink);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.member-name.is-open{color:#888;font-style:italic;font-weight:400}
+.member-role-tag{font-family:'DM Mono',monospace;font-size:8px;padding:1px 5px;background:var(--ink);color:var(--yellow);flex-shrink:0}
+.member-role-tag.is-open{background:#222;color:#666;border:1px solid #444}
+.members-overflow{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);padding:2px 0;text-align:center;cursor:pointer;border:1.5px dashed var(--ink);margin-top:2px}
+.flip-hint{margin-top:auto;border:none;border-top:2px solid var(--ink);padding:7px;font-family:'Bangers',cursive;font-size:13px;letter-spacing:.05em;color:var(--ink);background:var(--yellow);cursor:pointer;flex-shrink:0;transition:all .1s;width:100%}
+.flip-hint:hover{background:var(--blue);color:#fff}
+.card-back-inner{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.back-header{padding:12px 16px 8px;border-bottom:2px solid var(--ink);flex-shrink:0}
+.back-team-num{font-family:'Bangers',cursive;font-size:10px;letter-spacing:.1em;margin-bottom:2px}
+.back-title{font-family:'Bangers',cursive;font-size:14px;color:var(--ink);line-height:1.2}
+.back-body{flex:1;overflow-y:auto;padding:10px 16px;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}
+.back-section-label{font-family:'Bangers',cursive;font-size:10px;letter-spacing:.12em;margin-bottom:2px;border-bottom-width:1.5px;border-bottom-style:solid;padding-bottom:1px;display:block}
+.back-text{font-size:11px;color:var(--ink);line-height:1.55;white-space:pre-wrap}
+.back-footer{flex-shrink:0;padding:8px 16px;border-top:2px solid var(--ink);display:flex;align-items:center;justify-content:space-between}
+.flip-back-btn{font-family:'Bangers',cursive;font-size:12px;color:var(--ink);background:transparent;border:2px solid var(--ink);cursor:pointer;padding:2px 10px;letter-spacing:.05em}
+.flip-back-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.no-results{grid-column:1/-1;text-align:center;padding:80px 20px;font-family:'Bangers',cursive;font-size:28px;color:#555}
+.judges-section{background:#050508;padding:40px 40px 60px;border-top:4px solid var(--blue)}
+.judges-section-title{font-family:'Bangers',cursive;font-size:32px;letter-spacing:.06em;color:var(--orange);text-shadow:3px 3px 0 var(--red);margin-bottom:28px;font-style:italic}
+.support-list{columns:3 280px;column-gap:20px}
+.support-row{display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #0d0d1a;break-inside:avoid}
+.support-name{font-weight:700;color:#e8e8e8;font-size:13px;white-space:nowrap}
+.support-role{font-family:'DM Mono',monospace;font-size:10px;color:#555;letter-spacing:.04em}
+@media(max-width:600px){.support-list{columns:1}}
+@media(max-width:600px){.hero,.grid-container,.controls,.judges-section{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Hackathon 2026 · College Board Technology</div>
+    <h1>SHARKNADO</h1>
+    <div class="hero-subtitle">INTO THE STORM</div>
+    <div class="hero-assignments">Team Assignments</div>
+    <div class="hero-sub" id="heroSub">Loading...</div>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-num" id="statTeams">—</span><span class="stat-label">Teams</span></div>
+      <div class="stat"><span class="stat-num" id="statHackers">—</span><span class="stat-label">Hackers</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="searchInput" placeholder="Search teams or hackers…">
+  </div>
+  <div class="filter-group" id="themeFilters">
+    <span class="filter-label">Theme:</span>
+    <button class="pill active" data-theme="all">All</button>
+  </div>
+  <span class="count-badge" id="countBadge"></span>
+</div>
+
+<div class="grid-container" id="grid"></div>
+
+<div class="judges-section">
+  <div class="judges-section-title">🦈 Support Crew</div>
+  <div class="support-list">
+    <div class="support-row"><span class="support-name">Anu Ranganathan</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Adam Scott</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Amy Reitz</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Bob Petro</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Bridget Fortner</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Carlos Roque</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Chip McCrea</span><span class="support-role">Photographer</span></div>
+    <div class="support-row"><span class="support-name">Chris Meadows</span><span class="support-role">Technical Coach</span></div>
+    <div class="support-row"><span class="support-name">Corinne Jukes</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">David Coleman</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">David Keeling</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Elissa Kim</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Enrique Lara</span><span class="support-role">Rehearsal Coach · Technical Coach · Judge</span></div>
+    <div class="support-row"><span class="support-name">Erica Levesque</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Harsh Sood</span><span class="support-role">Technical Coach</span></div>
+    <div class="support-row"><span class="support-name">Indu Lalwani</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Jacob Liscom</span><span class="support-role">Technical Coach</span></div>
+    <div class="support-row"><span class="support-name">Jason Robertson</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Jenny Herbek</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Jeremy Singer</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Joel Johnson</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">John Plunket</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Joseph Tersigni</span><span class="support-role">Technical Coach</span></div>
+    <div class="support-row"><span class="support-name">Josh Mackert</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Josh Stern</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Kanika Lichtardt</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Kedra Ishop</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Kinny Mu</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Larry Saldanha</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Liz Cutrona</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Matthew Wagner</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Maureen Forman</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Melissa Donovan</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Nate Arrowsmith</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Peter Schwartz</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Richard Grenfell</span><span class="support-role">Technical Coach</span></div>
+    <div class="support-row"><span class="support-name">Ryan Smith</span><span class="support-role">Technical Coach</span></div>
+    <div class="support-row"><span class="support-name">Shane Holloway</span><span class="support-role">Technical Coach · Judge</span></div>
+    <div class="support-row"><span class="support-name">Shilpa Jasthi</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Shruti Sinha</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Sophia Romee</span><span class="support-role">Technical Coach</span></div>
+    <div class="support-row"><span class="support-name">Swarupa Mahambrey</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Tarun Jain</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Tim Preuss</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Travis Newby</span><span class="support-role">Rehearsal Coach</span></div>
+    <div class="support-row"><span class="support-name">Trevor Packer</span><span class="support-role">Judge</span></div>
+    <div class="support-row"><span class="support-name">Troy Marshall</span><span class="support-role">Rehearsal Coach</span></div>
+  </div>
+</div>
+
+<script>
+const TC={"AI-Mediated Instruction & Feedback":"#9333ea","Digital Integrity & Secure Delivery":"#cc1200","Ecosystem & Data Integration":"#0066ee","Inclusive & Multi-Modal Design":"#d946ef","Internal Workforce Tooling":"#16a34a","Platform Engineering & DevOps":"#ff6200","Student Journey & Career Discovery":"#ca8a04","TBD":"#5a4a2a"};
+const RC={"Engineering":"#0066ee","Design":"#9333ea","Product":"#16a34a","Data science":"#ff6200","Subject matter expert":"#ca8a04","SME":"#ca8a04","Other":"#888888"};
+const OP={name:"OPEN",role:"Open"};
+const fixMembers=arr=>arr.map(m=>(m&&m.OP)?m.OP:m);
+
+
+const TEAMS=[
+  {id:1,name:"Promptnado",theme:"AI-Mediated Instruction & Feedback",title:"Mandatory student response-to-feedback workflow",coach:"Adam Scott",
+   desc:"Prototype a feedback workflow where work isn't complete until the student responds to teacher feedback (revision, clarification question, or reflection). Include clear completion rules, version tracking with before/after visibility, and optional AI assistance separated from teacher feedback.",
+   members:[{name:"Anurag Srivastava",role:"Engineering"},{name:"Harish Kumar Bhupathiraju",role:"Engineering"},{name:"Samatha Yarragovula",role:"Engineering"},{name:"Savitha Puliyacheriath",role:"Product"},{name:"Roma Pherwani",role:"Data science"},{name:"Gabriel Querbes",role:"Engineering"},{name:"Daniel Vargas",role:"Engineering"}]},
+  {id:2,name:"Claudey with a Chance of Amazeballs",theme:"AI-Mediated Instruction & Feedback",title:"Dialog-based assessment experience with student reflection and teacher response",coach:"Adam Scott",
+   desc:"Build an assessment experience that replaces one-way scoring with structured dialogue: students submit work plus short intent/reflection prompts, and teachers respond with lightweight questions/follow-ups. Support configurable prompts tied to learning goals, preserve conversation context linked to evidence, and enable classroom-friendly workflows (templates, batching, time limits).",
+   members:[{name:"Harshi Bhooma",role:"Engineering"},{name:"Dhirendra Bhattarai",role:"Product"},{name:"Alexandra Colbert",role:"Data science"},{name:"Jack Chen",role:"Engineering"},{name:"Won Cho",role:"Engineering"},{name:"Julian Ubaldo",role:"Engineering"},{name:"Garrett Ziegler",role:"Subject matter expert"}]},
+  {id:3,name:"Reflection Reef",theme:"AI-Mediated Instruction & Feedback",title:"Versioned learning record with feedback and reflection timeline",coach:"Kinny Mu",
+   desc:"Prototype a 'living record' where student work evolves over time. Preserve versions, feedback, and reflections in a timeline so reviewers can see growth and what changed across attempts. Include version control, a timeline view highlighting changes and rationale, and clear permissions for viewing/commenting/exporting.",
+   members:[{name:"Richard Lin",role:"Engineering"},{name:"Nick DiMeglio",role:"Engineering"},{name:"Jonathan Manker",role:"Data science"},{name:"Sapna Nair",role:"Engineering"},{name:"Yuefeng Tang",role:"Subject matter expert"},{name:"MD Islam",role:"Engineering"},{name:"Eduardo Aceituno",role:"Engineering"}]},
+  {id:4,name:"Rostrum Rubrics Cubes",theme:"AI-Mediated Instruction & Feedback",title:"AI-assisted rubric creation workflow for teachers",coach:"Kinny Mu",
+   desc:"Build a guided rubric creation workflow that helps teachers clarify what they value and iteratively refine criteria/levels. Support version history and rationale notes, optional alignment to standards/objectives, and transparent AI suggestions that are easy to accept/reject/edit.",
+   members:[{name:"Luu Le",role:"Subject matter expert"},{name:"Niraimathi Mamilla",role:"Engineering"},{name:"Shaw Zhang",role:"Engineering"},{name:"Aaron Cordeau",role:"Engineering"},{name:"Sara Patton",role:"Subject matter expert"},{name:"Ramiro Alvarez",role:"Engineering"},{name:"Ganga Tadisetti",role:"Engineering"}]},
+  {id:5,name:"SharkMarks",theme:"AI-Mediated Instruction & Feedback",title:"Assessment portfolio builder with growth insights",coach:"Carlos Roque",
+   desc:"Prototype a student portfolio builder that curates assessment history into a story of growth. Highlight progress over time with simple visuals, prompt reflection, and recommend targeted learning resources based on patterns in performance and feedback with explainable rationale.",
+   members:[{name:"Utsab Pant",role:"Engineering"},{name:"Ray Regimbal",role:"Product"},{name:"Bob Brady",role:"Engineering"},{name:"Bryce Shelley",role:"Engineering"},{name:"Kinnari Mehta",role:"Product"},{name:"Meghan Oster",role:"Data science"},{name:"Rajul Kansara",role:"Engineering"}]},
+  {id:6,name:"Jawsome Scoring",theme:"AI-Mediated Instruction & Feedback",title:"AI FRQ scoring assistant for teachers",coach:"David Keeling",
+   desc:"Build an assistant that helps teachers grade AP-style FRQs faster without replacing teacher judgment. Map evidence to rubric criteria, flag missing elements, and suggest editable feedback comments. Include human-in-the-loop scoring controls and strong privacy protections for student work and outputs.",
+   members:[{name:"Rafael Treadway",role:"Engineering"},{name:"Bharathi Ravi",role:"Engineering"},{name:"Gopi Kalathur",role:"Engineering"},{name:"Michael Roth",role:"Product"},{name:"Brandon LeBeau",role:"Data science"},{name:"Weiwei Cui",role:"Subject matter expert"},{name:"Jing Zhang",role:"Engineering"}]},
+  {id:7,name:"Sharkbait ooh ha ha",theme:"Digital Integrity & Secure Delivery",title:"Bluebook Windows integrity verificator (candidate sidecar app)",coach:"Troy Marshall",
+   desc:"Build a lightweight, standalone Windows sidecar application that verifies the integrity of a Bluebook installation on a candidate's BYOD device. Validate file hashes and binary signatures against known-good release references and check the runtime environment for tampering indicators — producing a clear, proctor-readable result before the exam session begins.",
+   members:[{name:"Cassidy Avery",role:"Engineering"},{name:"Chary Dasoju",role:"Engineering"},{name:"Iyad Lahham",role:"Design"},{name:"Nicholas Yianilos",role:"Engineering"},{name:"Chris Allmon",role:"Engineering"},{name:"Christian Bates-White",role:"Engineering"},{name:"Yao Wang",role:"Engineering"}]},
+  {id:8,name:"Agents of S.H.A.R.K.",theme:"AI-Mediated Instruction & Feedback",title:"Multi-Agent Scoring Calibration Coach",coach:"Swarupa Mahambrey",
+   desc:"Prototype a multi-agent scoring system where independent agents argue for different rubric scores with cited evidence, challenge each other, and a consensus arbiter selects a final score and rationale. Compare against anchor benchmarks to detect drift patterns (over/under-scoring, rubric mismatch) and surface edge cases. Output should be optimized for human review.",
+   members:[{name:"Bradley Cox",role:"Engineering"},{name:"Scott Kellert",role:"Data science"},{name:"Honey Goudarzi",role:"Engineering"},{name:"Ajitesh Vedula",role:"Engineering"},{name:"Jennifer Bedet",role:"Subject matter expert"},{name:"Jordan Kay",role:"Engineering"},{name:"Nabil Khan",role:"Engineering"}]},
+  {id:9,name:"Project Hail Sharky",theme:"AI-Mediated Instruction & Feedback",title:"AI assistant for Test Day Toolkit",coach:"Swarupa Mahambrey",
+   desc:"Build an integrated helper for test-day operations that knows required steps, highlights edge cases, and answers procedural questions. Guide staff through contextual checklists with clear confidence and escalation behavior, grounded in approved policies and procedures, with audit logs of guidance and actions.",
+   members:[{name:"Kenneth Toney",role:"Engineering"},{name:"Andrea Mravlja",role:"Product"},{name:"Yadab Kattel",role:"Engineering"},{name:"Nickolas Freitas",role:"Engineering"},{name:"Kaushik Mahendravadi",role:"Engineering"},{name:"Bala Vadapally",role:"Engineering"},{name:"Shilpa Shetty",role:"Engineering"}]},
+  {id:10,name:"The Shadow Hunters",theme:"Digital Integrity & Secure Delivery",title:"Shadow AI discovery and risk triage for unapproved tools",coach:"Corinne Jukes",
+   desc:"Build an agentic discovery tool that surfaces unapproved AI tools used inside an organization by scanning internal signals (OAuth grants, expense reports, telemetry, mentions). Score risk using a rubric and draft an AI Tool Registry entry for review. Emphasize privacy-first collection, role-based access, and human review before enforcement/blocking.",
+   members:[{name:"PK Kansara",role:"Engineering"},{name:"Gus Gamboa Malaver",role:"Engineering"},{name:"Jose Avila",role:"Engineering"},{name:"Tobia Giachetti",role:"Engineering"},{name:"Alexander Jenks",role:"Engineering"},{name:"Nicholas Bilotta",role:"Data science"},{name:"Jing He",role:"Product"}]},
+  {id:11,name:"Shark Side of the Moon",theme:"Digital Integrity & Secure Delivery",title:"Predictive dashboard for device and location readiness risk",coach:"Josh Stern",
+   desc:"Build a predictive engine and dashboard that converts device telemetry (battery health, OS versions, error logs, network status) into readiness risk scores per location. Highlight likely failures, explain top drivers with confidence, and suggest mitigations with drill-down from location → device → evidence. Respect data freshness, retention, and privacy constraints.",
+   members:[{name:"Dan Smith",role:"Engineering"},{name:"Michael Hrizuk",role:"Engineering"},{name:"Javon Patterson",role:"Engineering"},{name:"Jack Barry",role:"Engineering"},{name:"Andres Guzman",role:"Engineering"},{name:"Suren Shrestha",role:"Product"},{name:"Allison Ray",role:"Data science"}]},
+  {id:12,name:"Shark-Vengers",theme:"Digital Integrity & Secure Delivery",title:"Test package ↔ content/instance matching service (Parent Model ID + REID)",coach:"Melissa Donovan",
+   desc:"Build a lightweight service that reliably matches test packages to the specific test content they contain (e.g., parent model ID) and the test instance they were used for (e.g., REID). The goal is to make package/content tracking faster and more accurate to support content integrity work.",
+   members:[{name:"Alex Kharbush",role:"Engineering"},{name:"Enrique Mendoza",role:"Engineering"},{name:"Supreet Singh",role:"Engineering"},{name:"Lorenz Wolfe",role:"Engineering"},{name:"Scott Yager",role:"Product"},{name:"May Yao",role:"Engineering"},{name:"Jacob Hession-Kunz",role:"Data science"}]},
+  {id:13,name:"Stickybeakers",theme:"Digital Integrity & Secure Delivery",title:"Bluebook AI Assist — Policy-Gated Technical Help During Exams",coach:"Josh Stern",
+   desc:"Prototype a controlled AI assistant embedded in an exam environment that provides technical/navigation help (not assessment content). Govern behavior with a deterministic policy layer restricting allowed categories, support offline/degraded mode, and log interactions with policy applied for audit.",
+   members:[{name:"Sarah Hardy",role:"Product"},{name:"Corey Domingos",role:"Engineering"},{name:"Ricardo Quintana",role:"Engineering"},{name:"Lakshmi Tanniru",role:"Engineering"},{name:"Sashank Padamati",role:"Engineering"},{name:"Thomas Clay",role:"Engineering"},{name:"Mike Wallize",role:"Subject matter expert"}]},
+  {id:14,name:"PhantomFins",theme:"Digital Integrity & Secure Delivery",title:"Privacy-preserving de-identification for student media",coach:"Shilpa Jasthi",
+   desc:"Build a pipeline that produces shareable student-media derivatives without exposing identity. Preserve evaluative signal while replacing face/voice identity and removing PII in speech/visuals. Include explainable transforms (what changed, confidence, residual risk) and secure storage/access assumptions.",
+   members:[{name:"Nick Consolo",role:"Engineering"},{name:"Tanner Cline",role:"Engineering"},{name:"Vijaya Dharmapuri",role:"Engineering"},{name:"Guizhong Chen",role:"Engineering"},{name:"Madhu Nagiri",role:"Engineering"},{name:"Vasavi Kura",role:"Engineering"},{name:"Sean Kelly",role:"Subject matter expert"}]},
+  {id:15,name:"JAWS (Just Add Wi-Fi Stations)",theme:"Digital Integrity & Secure Delivery",title:"Test center in a box: experience and software design",coach:"Jenny Herbek",
+   desc:"Prototype the experience and software stack for a self-contained test center system that any location could stand up with minimal overhead. Cover the full operational lifecycle — from student appointment booking and calendar management through workstation allocation, live administration monitoring, and proctor oversight — with a trust-but-verify philosophy that supports compliance without micromanagement.",
+   members:[{name:"Mike Mitchell",role:"Subject matter expert"},{name:"Duncan Stewart",role:"Engineering"},{name:"Kavitha Sekar",role:"Engineering"},{name:"Shelby Ware",role:"Subject matter expert"},{name:"Xiaolin Chen",role:"Engineering"},{name:"Hilary Sarneski-Hayes",role:"Data science"},{name:"Sophia Golden",role:"Product"}]},
+  {id:16,name:"pii-ranhas",theme:"Digital Integrity & Secure Delivery",title:"AI security proxy for prompt injection, jailbreaks, and PII leaks",coach:"Troy Marshall",
+   desc:"Prototype an agentic security proxy layer in front of AI tools to detect prompt injection, jailbreaks, and PII leakage in real time. Intercept inputs/outputs, apply policy checks, safely handle blocked/redacted content with review workflows, and support low-latency integration patterns (SDK/gateway/middleware) with audit telemetry.",
+   members:[{name:"Randy Fehr",role:"Subject matter expert"},{name:"Rasin Moolakandy",role:"Engineering"},{name:"Kyle Ciemielewski",role:"Engineering"},{name:"Lori Oliver",role:"Engineering"},{name:"Greg McCoy",role:"Engineering"},{name:"Venu Kudupudi",role:"Engineering"},{name:"Caroline Surratt",role:"Data science"}]},
+  {id:17,name:"Ready or Bot",theme:"Digital Integrity & Secure Delivery",title:"Operational admin copilot for readiness and policy Q&A",coach:"John Plunket",
+   desc:"Build an embedded operational copilot that turns readiness status signals and approved policy/procedure content into: dynamic, role-specific readiness checklists, an explainable readiness risk score, and real-time, policy-grounded answers to common procedural questions. Includes a 'What am I missing?' experience that scans readiness status and highlights gaps, overdue items, or likely failure points.",
+   members:[{name:"Sharat Bodla",role:"Engineering"},{name:"Sampath Mugada",role:"Design"},{name:"Udaya Kommineni",role:"Engineering"},{name:"Andrea Bailey",role:"Engineering"},{name:"Kalvin Miller",role:"Engineering"},{name:"Gibsan Abdu",role:"Engineering"},{name:"Holly Anderson",role:"Subject matter expert"}]},
+  {id:18,name:"Baby Shark Doo-Doo-Debug",theme:"Digital Integrity & Secure Delivery",title:"KVM camera device that simulates a test-taker",coach:"Shilpa Jasthi",
+   desc:"Prototype a KVM-enabled camera/device setup that simulates a test-taker environment for security testing in a sandbox. Create repeatable scenario scripts with known expected outcomes to validate telemetry, monitoring, and response workflows end-to-end, with strict ethical boundaries (no real credential misuse).",
+   members:[{name:"Ashraf Nabih",role:"Engineering"},{name:"Matt Burkhardt",role:"Engineering"},{name:"Gregory Cosgrove",role:"Engineering"},{name:"Abhilekh Adhikari",role:"Engineering"},{name:"Nathanial Luther",role:"Engineering"},{name:"John Beauregard",role:"Engineering"},{name:"Candace Bratton",role:"Product"}]},
+  {id:19,name:"SharkGPT",theme:"Digital Integrity & Secure Delivery",title:"Incident Response Data Bot (Unified Triage View)",coach:"Bob Petro",
+   desc:"Build an internal data bot that accelerates incident response by consolidating fragmented operational data into one unified triage view. Pull signals (logs, metrics, deploys, tickets), summarize what changed, propose next checks, and provide a timeline with correlation hints plus access controls/redaction for sensitive data.",
+   members:[{name:"Alex Lopatnikov",role:"Engineering"},{name:"Tim O'Connor",role:"Product"},{name:"Swapna Gouravaram",role:"Engineering"},{name:"Sreelata Pillai",role:"Engineering"},{name:"Joanne Xiao",role:"Data science"},{name:"Parker Chesney",role:"Engineering"},{name:"Matthew Taing",role:"Engineering"}]},
+  {id:20,name:"Bat Shark Repellant",theme:"Digital Integrity & Secure Delivery",title:"AI-driven quality control for student score reports",coach:"Shruti Sinha",
+   desc:"Prototype an automated QC pipeline that reviews student score report artifacts (PDFs, ESRs, related outputs) for formatting issues, data inconsistencies, missing fields, and anomalies. Produce a structured QC report with severity, evidence, and recommended fixes, using fake data where needed and ensuring strict data handling controls.",
+   members:[{name:"Vamsi Dokka",role:"Engineering"},{name:"Roopa Devatha",role:"Engineering"},{name:"Silas Kidd Myers",role:"Engineering"},{name:"Tim Ludwinski",role:"Engineering"},{name:"Sreenivas Addanki",role:"Data science"},{name:"Sourav Ghosh",role:"Engineering"},{name:"Lida Assareh",role:"Engineering"}]},
+  {id:21,name:"The Adversarial Vortex",theme:"Digital Integrity & Secure Delivery",title:"Adversarial Student-Response Generator for Scorer Stress Tests",coach:"Melissa Donovan",
+   desc:"Build a red-team agent that generates realistic but subtly flawed student responses and pair it with a scoring agent/workflow that must detect misconceptions. Output evaluation results showing where/why scoring fails, plus guardrails to keep use in controlled testing contexts. Stretch: classify failure modes and generate a rubric weakness report.",
+   members:[{name:"Iev Khov",role:"Engineering"},{name:"Sowjanya Ganameneni",role:"Design"},{name:"David Jasuan",role:"Engineering"},{name:"Michael Owellen",role:"Engineering"},{name:"Altaf Gohar",role:"Engineering"},{name:"Deepa Abhilash",role:"Engineering"},{name:"Kim Youngkoung",role:"Subject matter expert"}]},
+  {id:22,name:"Shell Script",theme:"Ecosystem & Data Integration",title:"AI metadata tagging for structured web content",coach:"Tim Preuss",
+   desc:"Prototype an AI-assisted tagging system that assigns consistent metadata to structured content. Suggest tags with explanations, support human-in-the-loop review and batch operations, enforce taxonomy rules, detect conflicts, and track quality metrics and drift monitoring for precision/recall.",
+   members:[{name:"Divy Agrawal",role:"Engineering"},{name:"Simran Ludher",role:"Product"},{name:"Stephen Oduor",role:"Engineering"},{name:"Carlos De Loza",role:"Engineering"},{name:"Gerdine Behrmann",role:"Engineering"},{name:"John Donohue",role:"Engineering"},{name:"Mitch Abramson",role:"Subject matter expert"}]},
+  {id:23,name:"Chum Funnel Elite",theme:"Ecosystem & Data Integration",title:"Legacy content importer into structured assignments",coach:"Enrique Lara",
+   desc:"Build a flexible importer that converts legacy materials (Google Docs, PDFs, worksheet images) into structured digital assignments. Extract questions/instructions, preserve helpful formatting, and output an editable modern representation with metadata. Handle messy layouts gracefully and include attribution/copyright plus teacher confirmation before publishing.",
+   members:[{name:"Alex Alwine",role:"Engineering"},{name:"Corey Malcom",role:"Engineering"},{name:"Srinivasa Motupalli",role:"Design"},{name:"Rael Hurwitz",role:"Engineering"},{name:"Amulya Sakhamuru",role:"Engineering"},{name:"OPEN",role:"Open"},{name:"Aaron Parker",role:"Engineering"}]},
+  {id:24,name:"VortexBuilder",theme:"Ecosystem & Data Integration",title:"Conversational session builder that outputs validated configuration JSON",coach:"Jason Robertson",
+   desc:"Prototype a conversational interface that converts natural language requests into schema-compliant session configuration JSON. Validate constraints, auto-correct common errors, and provide a preview and editable diff before applying changes, with logging of prompts/outputs/validation outcomes for auditing.",
+   members:[{name:"Sameera Chennadi",role:"Design"},{name:"Hareesh Yakkala",role:"Engineering"},{name:"Victor Cizek",role:"Engineering"},{name:"Varughese Kurian",role:"Engineering"},{name:"Ashish Joy",role:"Engineering"},{name:"Sirisha Bagam",role:"Engineering"},{name:"Sreenivas Bonthala",role:"Engineering"}]},
+  {id:25,name:"Timetable Tornado",theme:"Ecosystem & Data Integration",title:"AI session scheduling optimizer with scenario simulation",coach:"Nate Arrowsmith",
+   desc:"Build a constraint-satisfaction optimizer that schedules students into sessions using rooms, capacities, staff/proctors, and accommodation needs. Include scenario simulation to re-optimize plans and highlight tradeoffs. Provide explainable outputs and exportable schedules plus operational readiness checks.",
+   members:[{name:"Tom Smith",role:"Engineering"},{name:"Kyle Ford",role:"Engineering"},{name:"Stefan Progovac",role:"Engineering"},{name:"Satish Shankarnarayan",role:"Engineering"},{name:"Mary Petrie",role:"Product"},{name:"Alex Navarro",role:"Design"},{name:"Alex Pudikov",role:"Engineering"}]},
+  {id:26,name:"The Wobbegong Supercell",theme:"Digital Integrity & Secure Delivery",title:"Mouse-movement telemetry anomaly detection for suspicious test behavior",coach:"Maureen Forman",
+   desc:"Prototype a Bluebook-style telemetry pipeline that captures high-level mouse movement signals during test-taking and uses AI to flag behavioral patterns that may indicate suspicious assistance. Focus on detecting repeatable, unnatural interaction patterns and producing an explainable 'why it was flagged' output for human triage. Emphasize privacy-by-design using minimized or derived features rather than raw tracking.",
+   members:[{name:"Ashish Malav",role:"Data science"},{name:"Saritha Uppala",role:"Engineering"},{name:"Julia Beach",role:"Engineering"},{name:"Cody Anderson",role:"Engineering"},{name:"Karishma Patel",role:"Engineering"},{name:"Nirav Patel",role:"Engineering"},{name:"Alain Kuchta",role:"Engineering"}]},
+  {id:27,name:"We're Gonna Need a Bigger Sprint",theme:"Inclusive & Multi-Modal Design",title:"Print layout composer for assignments and handouts",coach:"Maureen Forman",
+   desc:"Prototype a layout composer that helps educators create printable handouts from digital content. Support drag-and-drop content blocks into page layouts, reusable templates, and export to print-ready PDFs with pagination and basic accessibility. Include licensing/attribution handling for provided vs. teacher-created content.",
+   members:[{name:"Marcus Hellams",role:"Engineering"},{name:"Emad Raza",role:"Design"},{name:"Noah Alvarado",role:"Engineering"},{name:"Aidan Amato",role:"Engineering"},{name:"Emily Almond",role:"Product"},{name:"Raman Balakrishnan",role:"Engineering"},{name:"Rajeswari Mahalingam",role:"Data science"}]},
+  {id:28,name:"Unwritten Waters",theme:"Inclusive & Multi-Modal Design",title:"Non-text authentic artifact assessments with visible reasoning",coach:"Bridget Fortner",
+   desc:"Build a non-text-dominant assessment artifact tool (concept maps, diagrams, annotated timelines, models) that lets students demonstrate understanding visually/structurally. Capture reasoning via annotations, steps, change history, and rationale prompts. Provide teacher review aligned to criteria and export/share options that remain readable outside the platform.",
+   members:[{name:"Ritvik Nag",role:"Engineering"},{name:"Serge Yaskolko",role:"Subject matter expert"},{name:"Brian Hubbard",role:"Engineering"},{name:"Sunil Nalumachu",role:"Engineering"},{name:"Ranga Gorthi",role:"Engineering"},{name:"Jordan Dravis",role:"Design"},{name:"Brittany Davis",role:"Engineering"}]},
+  {id:29,name:"Ctrl+Shark+Submit",theme:"Inclusive & Multi-Modal Design",title:"Multi-format evidence submission for the same learning goal",coach:"Erica Levesque",
+   desc:"Prototype an assessment workflow where students can choose how to demonstrate mastery (explain, model, annotate, diagram) while aligning to the same learning objective. Enable teachers to assess different formats consistently using a common evidence framework, cross-modality rubric/scoring guidance, and a UI for side-by-side review.",
+   members:[{name:"Amith Vishwakarma",role:"Engineering"},{name:"OPEN",role:"Open"},{name:"Josh Lamb",role:"Engineering"},{name:"Herlina Widodo",role:"Engineering"},{name:"Lisa Barros",role:"Design"},{name:"Jason Ceynar",role:"Subject matter expert"},{name:"Savitha Balakrishnan",role:"Engineering"}]},
+  {id:30,name:"JAWS: Justified Accommodation Workflow System",theme:"Inclusive & Multi-Modal Design",title:"Accommodation interpreter that maps records to delivery settings",coach:"Nate Arrowsmith",
+   desc:"Build an NLP-to-configuration interpreter that turns unstructured accommodation records (SIS imports, IEP PDFs, notes) into precise platform delivery settings. Provide high-precision mappings with explicit uncertainty/flagging for human review and clear auditability from source snippet → interpretation → recommended toggles/settings.",
+   members:[{name:"Shakil Huda",role:"Product"},{name:"Alejandro Estrada Esparza",role:"Engineering"},{name:"Akshara Anugula",role:"Engineering"},{name:"Matt Farmer",role:"Engineering"},{name:"Oluwadamilola Okusanya",role:"Engineering"},{name:"Arantxa Espinoza",role:"Design"},{name:"Monica Gaikaiwari",role:"Engineering"}]},
+  {id:31,name:"DIFenders",theme:"Inclusive & Multi-Modal Design",title:"Fairness sentinel for subgroup bias detection",coach:"Indu Lalwani",
+   desc:"Prototype a fairness 'sentinel' that helps content teams flag potential subgroup bias risks earlier in the item lifecycle (before field testing). Generate a short, structured review report per item calibrated against a labeled reference set of items with known DIF vs. no DIF.",
+   members:[{name:"Cassie Chen",role:"Subject matter expert"},{name:"Amira Warman",role:"Other"},{name:"Syam Maddali",role:"Design"},{name:"Hunter Miller",role:"Engineering"},{name:"Kyle Goetschius",role:"Engineering"},{name:"Steven Hobbs",role:"Data science"},{name:"Ion Drembliuga",role:"Engineering"}]},
+  {id:32,name:"Bite Club",theme:"Internal Workforce Tooling",title:"Claude Skill for New Hire Onboarding",coach:"Larry Saldanha",
+   desc:"Design and prototype a Claude Skill that guides new employees through a clear, role-aware onboarding journey — from pre-day one preparation through the first few weeks of ramp. Help new hires complete key documents and tasks, answer common policy/FAQ questions, recommend role-specific learning steps, and surface 'what's next' based on role, location, start date, and progress.",
+   members:[{name:"Nur Yijiati",role:"Engineering"},{name:"Yogesh Mali",role:"Engineering"},{name:"Jasmeen Rangi",role:"Design"},{name:"Matthew Urtnowski",role:"Engineering"},{name:"Satish Atmuri",role:"Engineering"},{name:"Kamiar Coffey",role:"Subject matter expert"},{name:"Theresa Almand",role:"Product"}]},
+  {id:33,name:"Fin-telligence",theme:"Internal Workforce Tooling",title:"AI knowledge hub for internal workforce enablement",coach:"Josh Mackert",
+   desc:"Prototype an AI-enabled knowledge hub that ingests internal artifacts, links related topics, and supports Q&A with traceable sources. Include content ingestion, taxonomy/graph linking, source citations, recency indicators, ownership metadata, and access controls that respect team boundaries and sensitive projects.",
+   members:[{name:"Joshua Sanchez",role:"Engineering"},{name:"Elizabeth Johnson",role:"Other"},{name:"Daniel Hawes",role:"Engineering"},{name:"Ronald Cobbs",role:"Engineering"},{name:"Bhagya Koteru",role:"Engineering"},{name:"Cindy Griffin",role:"Product"},{name:"Matthew Fraser",role:"Engineering"}]},
+  {id:34,name:"Ship or Swim",theme:"Internal Workforce Tooling",title:"AI-enabled product experimentation playbook",coach:"Bridget Fortner",
+   desc:"Prototype a repeatable AI-enabled experimentation playbook that moves from discovery to validated delivery. Starting from customer data, generate a prioritized backlog, outcome-based feature definitions, a PRD, a rapid prototype, and a test-and-learn summary for a go/no-go decision. Include templates/standards and traceability from evidence to decisions.",
+   members:[{name:"Quinn MacRorie",role:"Design"},{name:"Alice Safford",role:"Product"},{name:"Ghabrille Ampo",role:"Engineering"},{name:"Linghao Wang",role:"Engineering"},{name:"Nagela Nukuna",role:"Product"},{name:"Navneet Verma",role:"Engineering"},{name:"Rohini Gunalan",role:"Engineering"}]},
+  {id:35,name:"Kraken the Research Loop",theme:"Internal Workforce Tooling",title:"Research artifact-to-insights documentarian",coach:"Anu Ranganathan",
+   desc:"Build agents that ingest research artifacts (recordings, transcripts, surveys) and produce a traceable set of insights linked to evidence. Add retrieval of relevant prior research to reduce duplication via deduplication/topic clustering. Include governance for sensitive participant data and consent boundaries.",
+   members:[{name:"Amit Vasavada",role:"Engineering"},{name:"Kyle Serrecchia",role:"Engineering"},{name:"Nate Woods",role:"Product"},{name:"Thulasi Konduru",role:"Engineering"},{name:"Sunitha Duggireddy",role:"Engineering"},{name:"Vijaya Rachamallu",role:"Engineering"},{name:"Jacques Villarreal",role:"Design"}]},
+  {id:36,name:"Claude, win us the hackathon, make no mistakes",theme:"Internal Workforce Tooling",title:"Enterprise skill registry for AI and agent execution",coach:"Corinne Jukes",
+   desc:"Prototype a lightweight Skill Registry where teams and AI agents can register, discover, version, and execute enterprise-approved skills. Include governance states (approved/deprecated), access control, approval/deprecation workflows, controlled execution/sandboxing, and audit logging for every invocation.",
+   members:[{name:"Mark Maupin",role:"Engineering"},{name:"Basavaraj Naregal",role:"Engineering"},{name:"Monique Watson",role:"Subject matter expert"},{name:"Dave Miller",role:"Product"},{name:"Shavkat Shavkiev",role:"Engineering"},{name:"Farrukh Karimov",role:"Engineering"},{name:"Michael Walton",role:"Engineering"}]},
+  {id:37,name:"FinFinder",theme:"Internal Workforce Tooling",title:"AI user recruitment and screener builder",coach:"Larry Saldanha",
+   desc:"Prototype an agent that turns a target participant profile into a complete recruitment kit: screener questions, outreach messaging, and a quota plan. Keep language inclusive and unbiased with bias-aware checks, support quota planning (must-haves vs nice-to-haves), and export assets (forms/messages/tracking templates).",
+   members:[{name:"Jacob Ota",role:"Engineering"},{name:"Stacy Bergert",role:"Product"},{name:"Cody Reinold",role:"Engineering"},{name:"Davian Canty",role:"Engineering"},{name:"Aamer Alam",role:"Subject matter expert"},{name:"Sara Tavakolian",role:"Engineering"},{name:"Scott Nelson",role:"Engineering"}]},
+  {id:38,name:"Apex PR-edator",theme:"Platform Engineering & DevOps",title:"Documentation-as-code CI agent",coach:"Josh Mackert",
+   desc:"Prototype a CI/CD workflow that keeps documentation aligned with code changes. Inspect code diffs, determine impacted docs, propose updates/open a PR, and report confidence and coverage. Include mappings between code areas and doc owners, PR-based review gates, rollback safety, and metrics to track false positives.",
+   members:[{name:"Christian Hoy",role:"Engineering"},{name:"Crystal Sizemore",role:"Engineering"},{name:"Lanre Kadiri",role:"Design"},{name:"Vamsi Doddapaneni",role:"Engineering"},{name:"Karl Lauret",role:"Engineering"},{name:"Syed Mohamed",role:"Engineering"},{name:"Rajesh Bhagat",role:"Engineering"}]},
+  {id:39,name:"MCP Hammer Time",theme:"Platform Engineering & DevOps",title:"Internal-tool MCP servers and coding skills for AI assistants",coach:"Tarun Jain",
+   desc:"Build MCP servers, agent tools, or reusable skills that make coding assistants effective with internal UI systems and design standards. Demonstrate safe, documented tool usage with defined schemas, permissions, and sandbox environments, plus examples/tests, versioning, and documentation so teams can adopt skills confidently.",
+   members:[{name:"Lois Lewis",role:"Design"},{name:"Ajay Kumar",role:"Product"},{name:"Jack Tierney",role:"Engineering"},{name:"Steven Reich",role:"Engineering"},{name:"Kanaan Anders",role:"Engineering"},{name:"Arun Surendranath",role:"Engineering"},{name:"Omar Haque",role:"Engineering"}]},
+  {id:40,name:"Anomalynado",theme:"Platform Engineering & DevOps",title:"Lifecycle anomaly detection and alert routing framework",coach:"Tarun Jain",
+   desc:"Build an event-driven framework that ingests lifecycle events (delivery, scoring, reporting) and detects abnormal patterns. Classify severity, route alerts to appropriate roles using policy rules, and provide evidence bundles, deduplication to reduce noise, audit logs, dashboards, and alignment to operational SLO/SLA expectations.",
+   members:[{name:"Jonathan Her",role:"Engineering"},{name:"Kyle Walters",role:"Engineering"},{name:"Ben Valentine",role:"Engineering"},{name:"Candy Tang",role:"Engineering"},{name:"Austin Burrow",role:"Engineering"},{name:"Monique Parsley",role:"Product"},{name:"John Jimenez",role:"Engineering"}]},
+  {id:41,name:"Fins & Figures",theme:"Platform Engineering & DevOps",title:"Upstream impact radar for downstream breakage risk",coach:"Tim Preuss",
+   desc:"Build an AI-powered tool that accepts an upstream PR diff, classifies the type of change (schema/contract/payload restructure, etc.), and returns a plain-language risk explanation of what could break downstream and how severe. Stretch: post to Slack/create Jira, support multiple repos with dependency mappings, and suggest mitigations/next steps.",
+   members:[{name:"Ari Genauer",role:"Engineering"},{name:"Frank Ruiz",role:"Product"},{name:"Praveena Katakam",role:"Data science"},{name:"Naresh Rangwani",role:"Engineering"},{name:"Rohit Tirmanwar",role:"Engineering"},{name:"Sai Munesh Bejjavarapu",role:"Engineering"},{name:"James Holzer",role:"Engineering"}]},
+  {id:42,name:"RootNado",theme:"Platform Engineering & DevOps",title:"AI Root-Cause Assistant + Ops Knowledge Base",coach:"Travis Newby",
+   desc:"Prototype an ops assistant that helps engineers diagnose production issues by summarizing logs, tracing likely failure paths, and proposing plausible root causes with next steps. Capture confirmed resolutions into a searchable knowledge base using structured case files (symptoms → cause → fix → prevention) and a feedback loop to improve suggestions.",
+   members:[{name:"Joshua Calhoun",role:"Engineering"},{name:"Vedavathi Amirineni",role:"Engineering"},{name:"Wenbo Zhou",role:"Engineering"},{name:"Curtis Warren",role:"Engineering"},{name:"Gary Eberly",role:"Engineering"},{name:"AJ Hennessy",role:"Engineering"},{name:"Nicholas Koffler",role:"Design"}]},
+  {id:43,name:"SharkOps",theme:"Platform Engineering & DevOps",title:"CI/CD policy guardrails validator with compliance reporting",coach:"Anu Ranganathan",
+   desc:"Build a policy-as-code validation engine that checks whether a service meets required enterprise standards before deployment. Integrate with a Skill Registry (or mock) to verify capabilities (auth, logging, observability), support exceptions workflows, and produce structured machine-readable compliance reports plus human-friendly summaries.",
+   members:[{name:"Damion Dollar",role:"Engineering"},{name:"Yiqing He",role:"Engineering"},{name:"Kyle Schiller",role:"Engineering"},{name:"Robert Rico",role:"Engineering"},{name:"Murat Halici",role:"Engineering"},{name:"Matthew Thomas",role:"Design"},{name:"Kristen Alvarez",role:"Engineering"}]},
+  {id:44,name:"Dude, Where's My Shark",theme:"Platform Engineering & DevOps",title:"Autonomous improvement agents for engineering metrics",coach:"Bob Petro",
+   desc:"Build job-specific autonomous agents that engineers can point at a repo/service to improve a measurable metric (e.g., API latency) until a target is reached. The agent proposes changes, runs checks, evaluates results, and iterates safely with scope limits, approval gates, rollback strategy, and before/after measurement reporting.",
+   members:[{name:"Kiran Chadalavada",role:"Engineering"},{name:"Abdulaziz Malik",role:"Engineering"},{name:"Parker Goyer",role:"Data science"},{name:"John Nei",role:"Engineering"},{name:"Keyton Friske",role:"Engineering"},{name:"Garrett Sutula",role:"Engineering"},{name:"Patricia Wang",role:"Subject matter expert"}]},
+  {id:45,name:"Finfrastructure as Code",theme:"Platform Engineering & DevOps",title:"AI NFR review for code and infrastructure as code",coach:"Carlos Roque",
+   desc:"Prototype an AI service that reviews a codebase and infrastructure-as-code against non-functional requirements (performance, reliability, security, cost). Group findings by NFR, run evidence-based reasonableness checks, assign severity, and suggest targeted improvements with conservative uncertainty handling and supporting evidence.",
+   members:[{name:"Devan Leabres-O'Guerin",role:"Engineering"},{name:"Gary Li",role:"Engineering"},{name:"Ken Ficara",role:"Product"},{name:"Naimish Shah",role:"Engineering"},{name:"Heidi Harrison",role:"Engineering"},{name:"Ryan Haynes",role:"Engineering"}]},
+  {id:46,name:"Shark Byte",theme:"Platform Engineering & DevOps",title:"Release-risk analyzer for feature and code changes",coach:"Enrique Lara",
+   desc:"Prototype an AI service that reviews a release's feature list and related code changes to identify risk areas. Group changes by high/medium/low risk, explain why (complexity, blast radius, change type), and recommend additional validation (test plans, targeted unit tests, reviewer prompts, rollback notes).",
+   members:[{name:"Matthew Nicolai",role:"Subject matter expert"},{name:"Kamaria DeRamus",role:"Engineering"},{name:"Ryan Morrow",role:"Engineering"},{name:"Christian Quintero",role:"Engineering"},{name:"Satyanarayana Guduguntla",role:"Data science"},{name:"Satish Chandu",role:"Engineering"},{name:"Anil Kumar",role:"Engineering"}]},
+  {id:47,name:"Jaws of Approval",theme:"Platform Engineering & DevOps",title:"Auto-remediation agents for CI/CD failures",coach:"Indu Lalwani",
+   desc:"Build helper agents that automatically engage when CI/CD pipelines fail. Read failure logs, classify errors, propose fixes, open a PR/patch, rerun checks, and iterate until passing — within guardrails and requiring human approval before merges.",
+   members:[{name:"Marc Skwarczynski",role:"Engineering"},{name:"Tao Shou",role:"Engineering"},{name:"Rachel Hantz",role:"Data science"},{name:"John White",role:"Engineering"},{name:"OPEN",role:"Open"},{name:"Marco Vaca",role:"Engineering"},{name:"Adam King",role:"Engineering"}]},
+  {id:48,name:"Jaws of the Log",theme:"Platform Engineering & DevOps",title:"AI-Powered CloudWatch Incident Triage & Root Cause Assistant",coach:"John Plunket",
+   desc:"Prototype an assistant that helps engineers triage incidents by analyzing CloudWatch logs and related AWS signals. Summarize symptoms, highlight suspicious patterns, suggest likely root causes, recommend next investigative steps, and capture confirmed resolutions into a reusable incident knowledge base with least-privilege access.",
+   members:[{name:"Elias Gezahegn",role:"Engineering"},{name:"Jonathan Sammons",role:"Engineering"},{name:"Sapna Sethuram",role:"Engineering"},{name:"Ling Chen",role:"Subject matter expert"},{name:"Chris Simmons",role:"Engineering"},{name:"Yunhui Yang",role:"Engineering"},{name:"Alejandro Alvarado",role:"Engineering"}]},
+  {id:49,name:"Enroll Patrol",theme:"Student Journey & Career Discovery",title:"CSR Copilot for SAT Registration (Chat + Voice)",coach:"Jenny Herbek",
+   desc:"Build a copilot inside a student profile that helps customer service reps complete SAT registration via chat (and optionally voice-to-text) without navigating the full UI. Gather required details, show available dates, guide confirmations, and complete tasks within role-aware permissions and safe action boundaries, with clarifying questions for missing criteria and a full audit trail.",
+   members:[{name:"Chaelsa Williams-McKay",role:"Subject matter expert"},{name:"Tashi Gurung",role:"Engineering"},{name:"Sarah Minukas",role:"Design"},{name:"Samantha Todd",role:"Engineering"},{name:"Ramelle Brown",role:"Product"},{name:"Shai Tadikonda",role:"Engineering"},{name:"Somonak Kao",role:"Engineering"}]},
+  {id:50,name:"The Sharkshank Redemption",theme:"AI-Mediated Instruction & Feedback",title:"AI-assessed collaborative problem-solving experience",coach:"David Keeling",
+   desc:"Prototype a real-time collaborative environment where small student teams solve an authentic, open-ended challenge together. An AI layer observes the process — not just the outcome — and generates evidence-based assessments of each participant's collaborative competencies: communication quality, reasoning contributions, creative input, and teamwork behaviors. Teachers receive a structured summary of collaboration patterns across the team.",
+   members:[{name:"Sam Swett",role:"Engineering"},{name:"Saritha Chalimeda",role:"Design"},{name:"Fareeha Kashif",role:"Engineering"},{name:"Jennica LeClerc",role:"Engineering"},{name:"Elijah Cole",role:"Engineering"},{name:"Ayush Saxena",role:"Subject matter expert"},{name:"Laurie Moore",role:"Product"}]},
+  {id:51,name:"Category 5 Communications",theme:"Student Journey & Career Discovery",title:"AI-assisted Higher Ed communication plan builder",coach:"Erica Levesque",
+   desc:"Prototype a faster way for Higher Ed users to create student outreach plans. Generate a draft communication plan (channels, timing, messages, segmentation) from a user's objective and let users refine via guided flow or prompt editing. Use templates aligned to common objectives, support tone/cadence/segmentation/compliance editing, and be transparent about data used and recommendation logic.",
+   members:[{name:"Sujatha Raguru",role:"Engineering"},{name:"Jambunathan Janakiraman",role:"Design"},{name:"Lexie Gaines-Smith",role:"Engineering"},{name:"Sandhya Panati",role:"Engineering"},{name:"Kevin Tripp",role:"Product"},{name:"Adam Lyn",role:"Engineering"},{name:"Rohit Kuchakulla",role:"Engineering"}]},
+  {id:52,name:"StormWatch AI",theme:"Student Journey & Career Discovery",title:"Readiness communication concierge with personalized outreach",coach:"Jason Robertson",
+   desc:"Build a concierge that generates personalized readiness checklists and targeted 'Get Ready' nudges based on readiness status (e.g., app not installed, OS outdated). Adjust urgency and follow-ups with eligibility rules, cadence controls, tone/urgency policy, opt-out preferences, and auditability of messages sent and triggers.",
+   members:[{name:"Tyler Couzens",role:"Engineering"},{name:"Aileen Moner",role:"Other"},{name:"Karina Yang",role:"Engineering"},{name:"Jackson Demaree",role:"Engineering"},{name:"Samuel Asfeha",role:"Engineering"},{name:"Juliet Slade",role:"Engineering"},{name:"Brian Sarcinelli",role:"Product"}]},
+  {id:53,name:"SharkEye",theme:"Digital Integrity & Secure Delivery",title:"Remote-controlled HD camera service for testing room anomaly detection",coach:"Travis Newby",
+   desc:"Build a service that enables remote, real-time monitoring of a testing room via a pan/tilt HD camera mounted on a tripod. A remote proctor controls camera positioning through a web dashboard, streams live video, and receives AI-assisted alerts when anomalies are detected — unusual screen content, candidate gestures, or environmental irregularities — without needing to watch the feed continuously.",
+   members:[{name:"Elena Owellen",role:"Engineering"},{name:"Lynn Lim",role:"Product"},{name:"Misha Antoshchuk",role:"Engineering"},{name:"OPEN",role:"Open"},{name:"Upender Meda",role:"Engineering"},{name:"Eric Morrison",role:"Engineering"},{name:"John Hoffmeyer",role:"Engineering"}]},
+  {id:54,name:"Schrödinger's Shark",theme:"AI-Mediated Instruction & Feedback",title:"Virtual science lab simulator platform (K-12 and early college)",coach:"Shruti Sinha",
+   desc:"Prototype a College Board-native virtual lab simulator inspired by the full scope of Labster — immersive, browser-based science experiments across biology, chemistry, physics, environmental science, and health sciences. Students manipulate virtual equipment, observe realistic outcomes based on their choices, collect and analyze data, and receive AI-assisted scaffolding throughout. Explores both the student experience and the platform architecture.",
+   members:[{name:"Benjamin Ryan",role:"Engineering"},{name:"Edwina Liu",role:"Product"},{name:"Motti Horesh",role:"Engineering"},{name:"Munish Garg",role:"Engineering"},{name:"Peter Vuyk",role:"Engineering"},{name:"Reshu Manohar",role:"Design"},{name:"John Towler",role:"Engineering"}]}
+];
+
+let activeTheme='all',searchQuery='';
+
+function buildThemeFilters(){
+  const themes=[...new Set(TEAMS.map(t=>t.theme))].sort();
+  const fc=document.getElementById('themeFilters');
+  fc.innerHTML='<span class="filter-label">Theme:</span><button class="pill active" data-theme="all">All</button>';
+  themes.forEach(theme=>{
+    const btn=document.createElement('button');
+    btn.className='pill';btn.dataset.theme=theme;
+    btn.textContent=theme.length>22?theme.slice(0,20)+'…':theme;
+    btn.title=theme;fc.appendChild(btn);
+  });
+  fc.querySelectorAll('[data-theme]').forEach(btn=>btn.addEventListener('click',()=>{
+    fc.querySelectorAll('[data-theme]').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');activeTheme=btn.dataset.theme;renderCards();
+  }));
+}
+
+function updateStats(){
+  const totalHackers=TEAMS.reduce((s,t)=>s+t.members.filter(m=>m&&m.name&&m.name!=='OPEN').length,0);
+  document.getElementById('statTeams').textContent=TEAMS.length;
+  document.getElementById('statHackers').textContent=totalHackers;
+  document.getElementById('heroSub').textContent=`${TEAMS.length} teams · ${totalHackers} hackers`;
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function roleDot(role,isOpen){
+  if(isOpen)return`<span class="member-dot" style="background:#222;border-color:#444"></span>`;
+  const c=RC[role]||'#888';return`<span class="member-dot" style="background:${c}"></span>`;
+}
+function roleTag(role,isOpen){
+  if(isOpen)return`<span class="member-role-tag is-open">OPEN</span>`;
+  const s={'Engineering':'ENG','Design':'DSN','Product':'PM','Data science':'DS','Subject matter expert':'SME','SME':'SME','Other':'OTH'};
+  return`<span class="member-role-tag">${s[role]||'OTH'}</span>`;
+}
+
+function renderCards(){
+  const grid=document.getElementById('grid');
+  const q=searchQuery.toLowerCase();
+  grid.innerHTML='';
+  let visible=0;
+  const filtered=TEAMS.filter(team=>{
+    if(activeTheme!=='all'&&team.theme!==activeTheme)return false;
+    if(q&&!team.title.toLowerCase().includes(q)&&!team.theme.toLowerCase().includes(q)
+      &&!team.members.filter(m=>m.name!=='OPEN').some(m=>m.name.toLowerCase().includes(q)))return false;
+    return true;
+  });
+  filtered.forEach(team=>{
+    visible++;
+    const color=TC[team.theme]||'#5a4a2a';
+    const SHOW=5;
+    const shownM=team.members.slice(0,SHOW);
+    const extra=team.members.length-SHOW;
+    const memberRows=shownM.map(m=>{
+      const isOpen=m.name==='OPEN';
+      return`<div class="member-row">${roleDot(m.role,isOpen)}<span class="member-name${isOpen?' is-open':''}">${isOpen?'— Open Slot —':esc(m.name)}</span>${roleTag(m.role,isOpen)}</div>`;
+    }).join('');
+    const overflowHtml=extra>0?`<div class="members-overflow" onclick="expandMembers(event,${team.id},this)" data-expanded="false" style="color:${color}">+${extra} more</div>`:'';
+    const goals=team.goals?`<div><div class="back-section-label" style="color:${color};border-color:${color}">Goals</div><p class="back-text">${esc(team.goals)}</p></div>`:'';
+    const reqs=team.reqs?`<div><div class="back-section-label" style="color:${color};border-color:${color}">Requirements to consider</div><p class="back-text">${esc(team.reqs)}</p></div>`:'';
+    const stretch=team.stretch?`<div><div class="back-section-label" style="color:${color};border-color:${color}">Stretch goals</div><p class="back-text">${esc(team.stretch)}</p></div>`:'';
+    const roleCounts={};
+    team.members.filter(m=>m.name!=='OPEN').forEach(m=>{roleCounts[m.role]=(roleCounts[m.role]||0)+1});
+    const chipHtml=Object.entries(roleCounts).filter(([r])=>r!=='Engineering').map(([r,c])=>`<span class="role-chip">${{'Design':'DSN','Product':'PM','Data science':'DS','Subject matter expert':'SME','SME':'SME','Other':'OTH'}[r]||r}:${c}</span>`).join('');
+    const scene=document.createElement('div');
+    scene.className='card-scene';
+    scene.innerHTML=`
+<div class="team-card">
+  <div class="card-face card-front">
+    <div class="card-accent-bar" style="background:${color}"></div>
+    <div class="card-header">
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+        <span class="card-num" style="color:${color}">Team ${String(team.id).padStart(2,'0')}</span>
+        <span class="card-teamname">${esc(team.name||'')}</span>
+      </div>
+      <div class="card-title">${esc(team.title)}</div>
+      <span class="theme-pill" style="border-color:${color};color:${color}">${esc(team.theme)}</span>
+    </div>
+    <div class="card-stats">
+      <div class="mini-stat"><span class="mini-num">${team.members.filter(m=>m.name!=='OPEN').length}</span><span class="mini-label">Members</span></div>
+      <div class="mini-stat"><span class="mini-num">${team.members.filter(m=>m.role==='Engineering').length}</span><span class="mini-label">Eng</span></div>
+      <div class="role-chips">${chipHtml}</div>
+    </div>
+    <div class="card-members" id="members-${team.id}">${memberRows}${overflowHtml}</div>
+    <button class="flip-hint" onclick="event.stopPropagation();flipCard(this.closest('.team-card'))">FLIP FOR CHALLENGE DETAILS</button>
+  </div>
+  <div class="card-face card-back">
+    <div class="card-accent-bar" style="background:${color}"></div>
+    <div class="card-back-inner">
+      <div class="back-header">
+        <div class="back-team-num" style="color:${color}">Team ${String(team.id).padStart(2,'0')} · ${esc(team.name||'')} · Challenge Brief</div>
+        <div class="back-title">${esc(team.title)}</div>
+      </div>
+      <div class="back-body">
+        ${team.desc?`<div><div class="back-section-label" style="color:${color};border-color:${color}">Description</div><p class="back-text">${esc(team.desc)}</p></div>`:`<div><p class="back-text" style="color:#888;font-style:italic">Challenge brief coming soon.</p></div>`}
+        ${goals}${reqs}${stretch}
+      </div>
+      <div class="back-footer">
+        <button class="flip-back-btn" onclick="event.stopPropagation();flipCard(this.closest('.team-card'))">FLIP BACK</button>
+        <span class="theme-pill" style="border-color:${color};color:${color}">${esc(team.theme)}</span>
+      </div>
+    </div>
+  </div>
+</div>`;
+    grid.appendChild(scene);
+  });
+  if(visible===0)grid.innerHTML='<div class="no-results">NO TEAMS MATCH — TRY AGAIN!</div>';
+  document.getElementById('countBadge').textContent=`${visible} team${visible!==1?'s':''}`;
+}
+
+function flipCard(card){card.classList.toggle('flipped')}
+function expandMembers(e,teamId,el){
+  e.stopPropagation();
+  const team=TEAMS.find(t=>t.id===teamId);if(!team)return;
+  const expanded=el.dataset.expanded==='true';
+  const container=el.closest('.card-members');
+  if(expanded){
+    container.querySelectorAll('.member-row').forEach((r,i)=>{if(i>=5)r.remove()});
+    el.dataset.expanded='false';el.textContent=`+${team.members.length-5} more`;
+  } else {
+    const extra=team.members.slice(5).map(m=>{
+      const isOpen=m.name==='OPEN';
+      return`<div class="member-row">${roleDot(m.role,isOpen)}<span class="member-name${isOpen?' is-open':''}">${isOpen?'— Open Slot —':esc(m.name)}</span>${roleTag(m.role,isOpen)}</div>`;
+    }).join('');
+    el.insertAdjacentHTML('beforebegin',extra);
+    el.dataset.expanded='true';el.textContent='show less';
+  }
+}
+document.getElementById('searchInput').addEventListener('input',e=>{searchQuery=e.target.value;renderCards()});
+buildThemeFilters();
+TEAMS.forEach(t=>t.members=fixMembers(t.members));
+updateStats();
+renderCards();
+</script>
+</body>
+</html>
